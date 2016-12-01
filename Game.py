@@ -1,46 +1,62 @@
-import sys
 import pygame
+pygame.init()
 
-window = width, height = 960, 720
+#create colors
+white = (255,255,255)
+black = (0,0,0)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
 
-screen = pygame.display.set_mode(window)
+#position vars
+x_pos = 0
+y_pos = 0
+fire = 0
 
-title = display.set_caption("Michigan Football Asteroid!") 
+gameDisplay = pygame.display.set_mode((800, 600))
 
-# while True:
-# 	e = event.wait #wait for an event
-# 	if e.type == QUIT:
-# 		PyGame.quit() #exit the game
-# 		break
-# 	elif e.type == type:
-# 		#code to handle some other type of events
-# 	elif ...
+pygame.display.set_caption("Michigan Football Asteroid")
 
-# 	class name(Sprite):
-# 		def __init__(self):
-# 			Sprite.__init__(self)
-# 			self.image = image.load("filename").convert()
-# 			self.rect = self.image.get_rect().move(X,Y) #Use the image size to define the rect field
+pygame.display.update()
 
-# #Collisions
-# 	if sprite.rect.collidetect(sprite2.rect): #they collide
+gameDisplay.fill(white)
+pygame.display.update()
+	
 
-# 	groupcollide(group1, group2, kill1, kill2) #returns list of all sprites in group1 that collide with group2
+gameExit = False
+while not gameExit:
+	gameDisplay.fill(white)
+	for event in pygame.event.get():
+		print(event)
+		if event.type == pygame.QUIT:
+			gameExit = True
+		gameDisplay.fill(blue, rect=[50,50, 20,20]) #xpos ypos width height
 
-# #Drawing text:font
-# 	name.render("text", True, (red, green, blue))
-# 	#example
-# 	my_font = Font(None, 16)
-# 	text = my_font.render("Hello", True, (0,0,0))
+	if event.type == pygame.KEYDOWN:
+		if event.key == pygame.K_LEFT:
+			x_pos -= 10
+		if event.key == pygame.K_RIGHT:
+			x_pos += 10
+		if event.key == pygame.K_UP:
+			y_pos -= 10
+		if event.key == pygame.K_DOWN:
+			y_pos += 10
+		if event.key == pygame.K_w:
+			fire = 1
+			bullet_x = x_pos
+			bullet_y = y_pos
+			bullet_dx = 0
+			bullet_dy = 30
+	
+	if fire == 1:
+		bullet_y += bullet_dy
+		gameDisplay.fill(red, rect=[bullet_x, bullet_y, 10, 10])
+	gameDisplay.fill(blue, rect=[x_pos, y_pos, 20, 20])
+	pygame.display.update()
 
-# #Key Presses
-# 	key.get_pressed() #returns array of keys held down 
-# 	#example
-# 	keys_down = key.get_pressed()
-# 	if keys_down[K_LEFT]: #left arrow is being held down
 
-
-
+pygame.quit()
+quit()
 
 
 

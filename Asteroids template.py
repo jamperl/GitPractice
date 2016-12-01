@@ -9,42 +9,6 @@ screenMinY = -500
 screenMaxX = 500
 screenMaxY = 500
 
-class PhotonTorpedo(RawTurtle):
-    def __init__(self,canvas,x,y,direction,dx,dy):
-        super().__init__(canvas)
-        self.penup()
-        self.goto(x,y)
-        self.setheading(direction)
-        self.color("Green")
-        self.lifespan = 200
-        self.dx = math.cos(math.radians(direction)) * 2 + dx
-        self.dy = math.sin(math.radians(direction)) * 2 + dy
-        self.shape("bullet")
-    
-    def getLifeSpan(self):
-        return self.lifespan
-
-    def getDx(self):
-        return self.dx
-
-    def getDy(self):
-        return self.dy
-
-    def move(self):
-        self.lifespan = self.lifespan - 1
-        screen = self.getscreen()
-        x = self.xcor()
-        y = self.ycor()
-        x = (self.dx + x - screenMinX) %  \
-            (screenMaxX - screenMinX) + screenMinX
-        y = (self.dy + y - screenMinY) % \
-            (screenMaxY - screenMinY) + screenMinY
-   
-        self.goto(x,y)
-
-
-
-
 class Asteroid(RawTurtle):
     def __init__(self,canvas,dx,dy,x,y,size):
         RawTurtle.__init__(self,canvas)
@@ -152,19 +116,6 @@ def main():
     frame.pack(side = tkinter.RIGHT,fill=tkinter.BOTH)
     t.ht()
     
-
-    scoreVal = tkinter.StringVar()
-    scoreVal.set("0")
-    scoreTitle = tkinter.Label(frame,text="Score")
-    scoreTitle.pack()
-    scoreFrame = tkinter.Frame(frame,height=2, bd=1, \
-        relief=tkinter.SUNKEN)
-    scoreFrame.pack()
-    score = tkinter.Label(scoreFrame,height=2,width=20,\
-        textvariable=scoreVal,fg="Yellow",bg="black")
-    
-    score.pack()
-
     def quitHandler():
         root.destroy()
         root.quit()
@@ -177,8 +128,6 @@ def main():
     ship = SpaceShip(cv,0,0,(screenMaxX-screenMinX)/2+screenMinX,(screenMaxY-screenMinY)/2 + screenMinY)
     
     asteroids = []
-
-    bullets = [] 
     
     for k in range(5):
         dx = random.random() * 6 - 3
@@ -191,76 +140,9 @@ def main():
         asteroids.append(asteroid)
 
     def play():
-    
-        deadbullets = [] 
-
-        for bullet in bullets:
-            bullet.move()
-
-            if bullet.getLifeSpan() <= 0:
-                deadbullets.append(bullet)
-
-        for bullet in deadbullets:
-            try:
-                bullets.remove(bullet)
-            except:
-                print ("didn't find bullet")
-
-            bullet.goto(-screenMinX*2, -screenMinY*2)
-            bullet.ht
-
+        # Tell all the elements of the game to move
         ship.move()
         
-        hitasteroids = []
-
-        for bullet in bullets:
-            for asteroid in asteroids:
-                if not asteroid in hitasteroids and \
-                             intersect(bullet,asteroid):
-                    deadbullets.append(bullet)
-                    hitasteroids.append(asteroid)
-                    asteroid.setDX(bullet.getDX() + \
-                      asteroid.getDX())
-                    asteroid.setDY(bullet.getDY() + \
-                      asteroid.getDY())
-
-        for asteroid in hitasteroids:
-            try:
-                asteroids.remove(asteroid)
-            except:
-                print("didn't find asteroid in list")
-               
-            asteroid.ht()
-            size = asteroid.getSize()
-            
-            score = int(scoreVal.get())
-            
-            if size == 3:
-                score += 20
-            elif size == 2:
-                score += 50
-            elif size == 1:
-                score += 100
-                
-            scoreVal.set(str(score))
-            
-            if asteroid.getSize() > 1:
-                dx = asteroid.getDX()
-                dy = asteroid.getDY()
-                dist = math.sqrt(dx ** 2 + dy ** 2)
-                normDx = asteroid.getDX() / dist
-                normDy = asteroid.getDY() / dist
-                
-                asteroid1 = Asteroid(cv,-normDy,normDx, \
-                  asteroid.xcor(),asteroid.ycor(), \
-                  asteroid.getSize()-1)
-                asteroid2 = Asteroid(cv,normDy,-normDx, \
-                  asteroid.xcor(),asteroid.ycor(), \
-                  asteroid.getSize()-1)
-                asteroids.append(asteroid1)
-                asteroids.append(asteroid2)
-
-
         for asteroid in asteroids:
             asteroid.move()
 
@@ -270,28 +152,15 @@ def main():
     # Set the timer to go off the first time in 5 milliseconds
     screen.ontimer(play, 5)
     
-    
-    def turnright():
-        ship.setheading(ship.heading()-7)
-
-        screen.onkeypress(turnRight, K_6)
-
     def turnLeft():
         ship.setheading(ship.heading()+7)
         
-        screen.onkeypress(turnLeft, K_4)
+    screen.onkeypress(turnLeft,"4")
     
     def forward():
         ship.fireEngine()
         
-        screen.onkeypress(forward, " ")
-
-    def fire():
-        bullet = PhotonTorpedo(cv,ship.xcor(),ship.ycor(), \
-            ship.heading(),ship.getDX(),ship.getDY())
-        bullets.append(bullet)
-    
-    screen.onkeypress(fire, " ")
+    screen.onkeypress(forward,"5")
     
     screen.listen()
     tkinter.mainloop()
@@ -299,3 +168,5 @@ def main():
 if __name__ == "__main__":
     main()
   
+
+
