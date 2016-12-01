@@ -30,7 +30,7 @@ while not gameExit:
 		print(event)
 		if event.type == pygame.QUIT:
 			gameExit = True
-		gameDisplay.fill(blue, rect=[50,50, 20,20]) #xpos ypos width height
+		#gameDisplay.fill(blue, rect=[50,50, 20,20]) #xpos ypos width height
 
 	if event.type == pygame.KEYDOWN:
 		if event.key == pygame.K_LEFT:
@@ -41,15 +41,36 @@ while not gameExit:
 			y_pos -= 10
 		if event.key == pygame.K_DOWN:
 			y_pos += 10
-		if event.key == pygame.K_w:
+		if event.key == pygame.K_w: #actually firing down should I just change to -30
 			fire = 1
 			bullet_x = x_pos
 			bullet_y = y_pos
 			bullet_dx = 0
-			bullet_dy = 30
+			bullet_dy = 30 
+		if event.key == pygame.K_s:
+			fire = 1
+			bullet_x = x_pos
+			bullet_y = y_pos
+			bullet_dx = 0
+			bullet_dy = -30
+		if event.key == pygame.K_d:
+			fire = 1
+			bullet_x = x_pos
+			bullet_y = y_pos
+			bullet_dx = 30
+			bullet_dy = 0
+		if event.key == pygame.K_a:
+			fire = 1
+			bullet_x = x_pos
+			bullet_y = y_pos
+			bullet_dx = -30
+			bullet_dy = 0
+
+
 	
 	if fire == 1:
 		bullet_y += bullet_dy
+		bullet_x += bullet_dx
 		gameDisplay.fill(red, rect=[bullet_x, bullet_y, 10, 10])
 	gameDisplay.fill(blue, rect=[x_pos, y_pos, 20, 20])
 	pygame.display.update()

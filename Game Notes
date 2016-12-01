@@ -1,0 +1,37 @@
+importing the packages 
+initializing the pygame
+
+
+color
+color
+color
+color
+color
+
+
+need x_pos variable to incorporate movement/idea of coordinates
+need y_pos variable to incorporate movement/idea of coordinates
+need fire vairable to incorporate coordinates when a bullet is fired
+
+creating display screen
+
+creating "Michigan Football Asteroid" caption on display screen
+
+must update display when new element is incorporated in the screen
+
+filling the screen with a white background
+updating display to show this new background
+
+
+setting exitgame=false so it only exits when the gameExit variable=True
+#why do you set the variable = false instead of true but use while not in the next loop
+updating display within the while loop so it will contuilly change the background when sprites move
+Next few are just quiting the program if the event.type = QUIT(clicking the red x)
+
+
+
+
+
+if the event is a keydown 
+if that key down is a left, move the sprites x position by 10 to the left
+
