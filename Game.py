@@ -16,7 +16,9 @@ fire = 0
 #List of fired bullets
 armory = []
 
-gameDisplay = pygame.display.set_mode((800, 600))
+gameDisplay = pygame.display.set_mode((800, 600)) # -> Surface
+
+#background = pygame.image.load(image_name)-> setting a background image
 
 pygame.display.set_caption("Michigan Football Asteroid")
 
@@ -24,6 +26,9 @@ pygame.display.update()
 
 gameDisplay.fill(white)
 pygame.display.update()
+
+def updateShip():
+    ship = gameDisplay.fill(blue, rect=[x_pos, y_pos, 20, 20])
 
 class bullet():
     def __init__(self, x, y, dx, dy):
@@ -82,6 +87,26 @@ def updateBullets():
         # i.y = 20 - 30 = -10
         gameDisplay.fill(red, rect =[i.x, i.y, 10, 10])
 
+class Asteroid(pygame.Rect):
+    def __init__(self, asteroid_x, asteroid_y, mysize, speed, direction):
+        pygame.Rect.__init__(self, asteroid_x, asteroid_y, mysize, mysize)
+        self.asteroid_x = asteroid_x
+        self.asteroid_y = asteroid_y
+        self.mysize = mysize
+        self.speed = speed
+        self.direction = direction
+
+# asteroid1 = asteroid(x, y, "large", "fast", "NE")
+# "large" : 80 square => height = width = 80
+
+#def updateAsteroids():
+
+
+# def checkCollisions():
+#     for asteroid in space:
+#         ship.collidelist(space)
+
+
 gameExit = False
 while not gameExit:
     gameDisplay.fill(white)
@@ -101,14 +126,23 @@ while not gameExit:
             y_pos += 10
         if event.key in [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]: #actually firing down should I just change to -30
             fireBullet(event.key)
+    #screen.blit(background, (0,0)) -> in game command for line 21
+    asteroid1 = Asteroid(20, 50, 80, 80, 1)
 
     updateBullets()
-    gameDisplay.fill(blue, rect=[x_pos, y_pos, 20, 20])
+    updateShip()
+    # updateAsteroids()
+    # checkCollisions()
     pygame.display.update()
 
 
 pygame.quit()
 quit()
 
+# something random needs to generate asteroids
+#   some random number generation for each parameter (x, y, size, speed, direction)
+#       consider random number generation for size: 1, 2, 3 => 40x40, 60x60, 80x80
+#   upon asteroid initiliazation store asteroid in space list
+# asteroids
 
 
