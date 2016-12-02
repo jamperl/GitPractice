@@ -30,8 +30,11 @@ Next few are just quiting the program if the event.type = QUIT(clicking the red 
 
 
 
-
+When you comment out this line only 1 rectangle appears but you cant fire
 
 if the event is a keydown 
 if that key down is a left, move the sprites x position by 10 to the left
+
+
+71- actually moving the bullet within the screen
 
