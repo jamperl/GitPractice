@@ -12,12 +12,13 @@ blue = (0, 0, 255)
 #position vars
 x_pos = 0
 y_pos = 0
-fire = 0
 
-#List of fired bullets
-armory = []
-#List of created asteroids
-space = []
+# Global variables
+clock = pygame.time.Clock()
+fire = 0
+armory = [] #List of fired bullets
+space = [] #List of created asteroids
+ship_registry = []
 
 gameDisplay = pygame.display.set_mode((800, 600)) # -> Surface
 
@@ -30,33 +31,49 @@ pygame.display.update()
 gameDisplay.fill(white)
 pygame.display.update()
 
-def updateShip():
-    ship = gameDisplay.fill(blue, rect=[x_pos, y_pos, 20, 20])
 
-class bullet():
-    def __init__(self, x, y, dx, dy):
+class Ship(pygame.Rect):
+    def __init__(self, x, y):
+        pygame.Rect.__init__(self, x, y, 20, 20)
+
+def updateShip(arrow): 
+    for ship in ship_registry:
+        if arrow == pygame.K_LEFT:
+            ship.x = ship.x - 10
+        if arrow == pygame.K_RIGHT:
+            ship.x = ship.x + 10
+        if arrow == pygame.K_UP:
+            ship.y = ship.y - 10
+        if arrow == pygame.K_DOWN:
+            ship.y = ship.y + 10    
+
+class bullet(pygame.Rect):
+    def __init__(self, x, y, dx, dy): 
+        pygame.Rect.__init__(self, x, y, 10, 10)   # all bullets have size 10x10, so can "hard code" that number in here
         self.x = x
         self.y = y
-        self.dx = dx
+        self.dx = dx 
         self.dy = dy
 
     # def myMethodToIncreasedx(number):
-    #     self.dx = self.dx + number
+    # self.dx = self.dx + number
 
 # bullet1 = bullet(50, 100, 30, 0)
 # #bullet1.dx -> 30
 # bullet1.myMethodToIncreasedx(5)
 # #bullet1.dx -> 35
 
-def fireBullet(direction):
+def fireBullet(direction, myShip):
     if direction == pygame.K_w:
-        shot = bullet(x_pos, y_pos + 30, 0, -30) 
+        shot = bullet(myShip.x, myShip.y + 30, 0, -30) # in bullet class this sets x to x_pos value, y to y_pos + 30 value, dx to 0, dy to -30
+            # and then the pygame Rect's __init__ constructor grabs the value of x_pos and uses it for Rect's x attribute
+            # then the value of y_pos + 30 for Rect's y attribute, then 10 for Rect's width attribute, 10 height...
     elif direction == pygame.K_a: # left
-        shot = bullet(x_pos + 30, y_pos, -30, 0) 
+        shot = bullet(myShip.x + 30, myShip.y, -30, 0) 
     elif direction == pygame.K_s: # down
-        shot = bullet(x_pos, y_pos - 30, 0, 30) 
+        shot = bullet(myShip.x, myShip.y - 30, 0, 30) 
     elif direction == pygame.K_d: # right
-        shot = bullet(x_pos - 30, y_pos, 30, 0)
+        shot = bullet(myShip.x - 30, myShip.y, 30, 0)
     armory.append(shot)
 
 # shot = bullet(20, 20 + 30, 0, -30)
@@ -88,7 +105,7 @@ def updateBullets():
         # second time through game while loop
         # i.x = 20 + 0
         # i.y = 20 - 30 = -10
-        gameDisplay.fill(red, rect =[i.x, i.y, 10, 10])
+        gameDisplay.fill(red, i)
 
 class Asteroid(pygame.Rect): # Asteroid is a subclass of pygame.Rect class => pygame sees Asteroid objects as pygame Rects (because they ARE Rects, with some extra attributes we tacked on)
     def __init__(self, x, y, mysize, dx, dy):
@@ -182,6 +199,9 @@ def updateAsteroids(): # obligate this function to the drawing of the asteroid o
 #     for asteroid in space:
 #         ship.collidelist(space)
 
+# Create one ship object (aka use our ship class)
+ship = Ship(400, 300)
+ship_registry.append(ship)
 
 gameExit = False
 while not gameExit:
@@ -192,16 +212,13 @@ while not gameExit:
             gameExit = True
 
     if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
-            x_pos -= 10
-        if event.key == pygame.K_RIGHT:
-            x_pos += 10
-        if event.key == pygame.K_UP:
-            y_pos -= 10
-        if event.key == pygame.K_DOWN:
-            y_pos += 10
+        if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]:
+            updateShip(event.key)
         if event.key in [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]: #actually firing down should I just change to -30
-            fireBullet(event.key)
+            fireBullet(event.key, ship)
+
+    gameDisplay.fill(blue, ship)
+
     #screen.blit(background, (0,0)) -> in game command for line 21
     #asteroid1 = Asteroid(20, 50, 80, 80, 1)
 
@@ -209,14 +226,35 @@ while not gameExit:
         generateAsteroid() # will create an asteroid and put it into the space list
 
     updateBullets()
-    updateShip()
     updateAsteroids()
     # checkCollisions()
     pygame.display.update()
+    clock.tick(30)
 
 
 pygame.quit()
 quit()
+
+# game loop logic
+#   draw white background 
+#   look at events queue
+#       recalculate ship coordinates if necessary
+#       fireBullet if necessary
+#   regulate number of asteroids
+#       generateAsteroid if need be
+#   update ship position with recalculated coordinates
+#   updateBullets
+#   updateAsteroids
+#       redraw existing ones
+#       delete "off screen" ones -- however they start off screen, so how about delete those beyond underlying spawn territory -400 to 1200 x and -300 to 900 y
+#   check all collisions
+#       checkBulletAsteroidCollisions
+#           need to make bullets a subclass of pygame.Rect
+#           score should increase here
+#       checkShipAsteroidCollisions
+#   update the entire display with all of these changes
+#   tick the clock 30 milliseconds
+
 
 # something random needs to generate asteroids
 #   some random number generation for each parameter (x, y, size, speed, direction)
